@@ -1,4 +1,8 @@
 import streamlit as st
+
+# ===== Page Config (ต้องเป็นคำสั่งแรกของ Streamlit) =====
+st.set_page_config(page_title="Tomato Light Forecast 🍅", page_icon="🍅", layout="wide")
+
 import pandas as pd
 import plotly.graph_objects as go
 
@@ -14,9 +18,6 @@ df["forecast_ppfd"] = pd.to_numeric(df["forecast_ppfd"], errors="coerce")
 # ลบคอลัมน์ DLI_chunk ถ้ามี
 if "DLI_chunk" in df.columns:
     df = df.drop(columns=["DLI_chunk"])
-
-# ===== Page Config =====
-st.set_page_config(page_title="Tomato Light Forecast 🍅", page_icon="tomato", layout="centered")
 
 # ===== Title =====
 st.markdown("""
@@ -56,10 +57,9 @@ if filtered_df.empty:
     st.stop()
 
 # ===== Summary Metrics =====
-# สมมติข้อมูลวัดทุก 30 นาที = 1800 วินาที
-time_diff = 1800
+time_diff = 1800  # หน่วยวินาที (30 นาที)
 
-# คำนวณ DLI จาก forecast_ppfd ตามช่วงเวลาข้อมูล
+# คำนวณ DLI จาก forecast_ppfd
 dli_total = (filtered_df["forecast_ppfd"] * time_diff).sum() / 1_000_000
 
 low_light = filtered_df["forecast_ppfd"] < 200
