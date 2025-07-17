@@ -9,8 +9,11 @@ def load_data():
 
 df = load_data()
 df.index = pd.to_datetime(df.index)
-df["DLI_chunk"] = pd.to_numeric(df["DLI_chunk"], errors="coerce")
 df["forecast_ppfd"] = pd.to_numeric(df["forecast_ppfd"], errors="coerce")
+
+# ลบคอลัมน์ DLI_chunk ถ้ามี
+if "DLI_chunk" in df.columns:
+    df = df.drop(columns=["DLI_chunk"])
 
 # ===== Page Config =====
 st.set_page_config(page_title="Tomato Light Forecast 🍅", page_icon="🍅", layout="wide")
@@ -53,7 +56,12 @@ if filtered_df.empty:
     st.stop()
 
 # ===== Summary Metrics =====
-dli_total = filtered_df["DLI_chunk"].sum()
+# สมมติข้อมูลวัดทุก 30 นาที = 1800 วินาที
+time_diff = 1800
+
+# คำนวณ DLI จาก forecast_ppfd ตามช่วงเวลาข้อมูล
+dli_total = (filtered_df["forecast_ppfd"] * time_diff).sum() / 1_000_000
+
 low_light = filtered_df["forecast_ppfd"] < 200
 high_light = filtered_df["forecast_ppfd"] > 500
 total_points = len(filtered_df)
@@ -104,7 +112,6 @@ st.plotly_chart(fig, use_container_width=True)
 st.subheader("🗓️ ตารางค่าทำนาย (ทุก 30 นาที)")
 styled_df = filtered_df.style.format({
     "forecast_ppfd": "{:.1f}",
-    "DLI_chunk": "{:.3f}"
 }).background_gradient(subset=["forecast_ppfd"], cmap='YlOrRd')
 st.dataframe(styled_df, use_container_width=True)
 
