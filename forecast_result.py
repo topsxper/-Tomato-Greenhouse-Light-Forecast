@@ -16,7 +16,7 @@ if "DLI_chunk" in df.columns:
     df = df.drop(columns=["DLI_chunk"])
 
 # ===== Page Config =====
-st.set_page_config(page_title="Tomato Light Forecast 🍅", page_icon="🍅", layout="wide")
+st.set_page_config(page_title="Tomato Light Forecast 🍅", page_icon="tomato", layout="centered")
 
 # ===== Title =====
 st.markdown("""
@@ -34,8 +34,8 @@ st.markdown("""
             margin-bottom: 15px;
         }
     </style>
-    <div class="title-text">🌤️ Tomato Greenhouse Light Forecast</div>
-    <div class="subtitle-text">การทำนายระดับแสง PPFD และค่า DLI สะสมรายวัน</div>
+    <div class="title-text">🌤️Tomato Greenhouse Light Forecast🍅</div>
+    <div class="subtitle-text">การทำนายค่าแสง PPFD และค่า DLI สะสมใน 1 วัน</div>
     <hr>
 """, unsafe_allow_html=True)
 
@@ -72,7 +72,7 @@ col4.metric("🌑 ต่ำกว่าเกณฑ์ (<200)", f"{low_light.sum
 col5.metric("🌞 สูงเกินเกณฑ์ (>500)", f"{high_light.sum()} ({high_light.sum()/total_points*100:.1f}%)")
 
 # ===== PPFD Stats =====
-st.markdown("### 🔍 สถิติค่าทำนายแสง (PPFD)")
+st.markdown("### 🔍 สถิติค่าทำนายค่าแสง (PPFD)")
 col6, col7, col8 = st.columns(3)
 col6.markdown(f"<div style='font-size:20px;'>💡 ค่าเฉลี่ย: <b>{filtered_df['forecast_ppfd'].mean():.1f}</b> µmol/m²/s</div>", unsafe_allow_html=True)
 col7.markdown(f"<div style='font-size:20px;'>🔺 ค่าสูงสุด: <b>{filtered_df['forecast_ppfd'].max():.1f}</b> µmol/m²/s</div>", unsafe_allow_html=True)
@@ -81,7 +81,7 @@ col8.markdown(f"<div style='font-size:20px;'>🔻 ค่าต่ำสุด: <
 st.markdown("---")
 
 # ===== Plot Graph =====
-st.subheader("📈 กราฟทำนายแสง PPFD")
+st.subheader("📈 กราฟทำนายค่าแสง (PPFD)")
 
 fig = go.Figure()
 fig.add_trace(go.Scatter(
@@ -109,7 +109,7 @@ fig.update_xaxes(tickangle=45)
 st.plotly_chart(fig, use_container_width=True)
 
 # ===== Data Table =====
-st.subheader("🗓️ ตารางค่าทำนาย (ทุก 30 นาที)")
+st.subheader("🗓️ ตารางทำนายค่าแสง (ทุก 30 นาที)")
 styled_df = filtered_df.style.format({
     "forecast_ppfd": "{:.1f}",
 }).background_gradient(subset=["forecast_ppfd"], cmap='YlOrRd')
