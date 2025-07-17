@@ -22,6 +22,9 @@ if "DLI_chunk" in df.columns:
 # ===== Title =====
 st.markdown("""
     <style>
+        .main {
+        background-color: white !important;
+        }
         .title-text {
             text-align: center;
             color: #d62828;
